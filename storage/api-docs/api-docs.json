@@ -1,0 +1,243 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "NIBSS Service API",
+        "description": "API documentation for NIBSS Service",
+        "contact": {
+            "email": "admin@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/bvn/verify": {
+            "post": {
+                "tags": [
+                    "NIBSS"
+                ],
+                "summary": "Verify BVN",
+                "description": "Checks validity of a BVN and returns customer details",
+                "operationId": "8010c21262f0db5313af22f17a3e11d0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "bvn"
+                                ],
+                                "properties": {
+                                    "bvn": {
+                                        "type": "string",
+                                        "example": "22123456789"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "BVN verified successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/direct-debit": {
+            "post": {
+                "tags": [
+                    "NIBSS"
+                ],
+                "summary": "Initiate Direct Debit",
+                "description": "Creates a direct debit mandate",
+                "operationId": "963bda75babcaaf5d4b66d01f1112de3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "account_number",
+                                    "amount",
+                                    "frequency"
+                                ],
+                                "properties": {
+                                    "account_number": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "amount": {
+                                        "type": "number",
+                                        "example": 5000
+                                    },
+                                    "frequency": {
+                                        "type": "string",
+                                        "example": "monthly"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Direct debit mandate created"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/transfer": {
+            "post": {
+                "tags": [
+                    "NIBSS"
+                ],
+                "summary": "Fund Transfer",
+                "description": "Send money from one bank account to another",
+                "operationId": "9c802fa001e26d8d78b70dd9d8fc7323",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "from_account",
+                                    "to_account",
+                                    "amount",
+                                    "bank_code"
+                                ],
+                                "properties": {
+                                    "from_account": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "to_account": {
+                                        "type": "string",
+                                        "example": "0987654321"
+                                    },
+                                    "amount": {
+                                        "type": "number",
+                                        "example": 2500
+                                    },
+                                    "bank_code": {
+                                        "type": "string",
+                                        "example": "044"
+                                    },
+                                    "reference": {
+                                        "type": "string",
+                                        "example": "TXN-0012345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transfer successful"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiSuccess": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Operation completed"
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "example": {
+                    "status": "success",
+                    "message": "Operation completed",
+                    "data": {
+                        "key": "value"
+                    }
+                }
+            },
+            "ApiError": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "error"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Validation failed"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "nullable": true,
+                        "additionalProperties": {
+                            "schema": "Controller",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object",
+                "example": {
+                    "status": "error",
+                    "message": "Validation failed",
+                    "errors": {
+                        "bvn": [
+                            "The bvn field is required."
+                        ]
+                    }
+                }
+            },
+            "Controller": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "NIBSS",
+            "description": "NIBSS"
+        }
+    ]
+}
