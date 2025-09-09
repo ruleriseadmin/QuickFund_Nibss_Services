@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\NibssController;
 
 Route::get('/', function () {
     $response = [
@@ -10,3 +11,6 @@ Route::get('/', function () {
     ];
     return Response::json($response);
 });
+
+
+Route::post('/bvn/verify', [NibssController::class, 'verifyBVN']);
