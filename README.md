@@ -1,61 +1,106 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# NIBSS Service API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a Laravel-based API service that integrates with **NIBSS (Nigeria Inter-Bank Settlement System)** for:  
+- ✅ BVN Verification  
+- ✅ Direct Debit  
+- ✅ NIBSS Pay (Funds Transfer)  
 
-## About Laravel
+It includes:  
+- Standardized JSON responses (via `ApiResponse` trait)  
+- OpenAPI/Swagger documentation (`l5-swagger`)  
+- API authentication support (Bearer token ready)  
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📦 Requirements
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.1+  
+- Composer  
+- Laravel 10+  
+- MySQL/Postgres (or any DB supported by Laravel)  
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ⚙️ Installation
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Clone the repo:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    git clone https://github.com/your-org/nibss-service.git
+    cd nibss-service
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Install dependencies:
 
-### Premium Partners
+    composer install
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
 
-## Contributing
+Copy environment file and set configs:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    cp .env.example .env
+    php artisan key:generate
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Update .env with your database and NIBSS credentials:
 
-## Security Vulnerabilities
+    APP_NAME="NIBSS Service"
+    APP_URL=http://localhost:8000
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=nibss_service
+    DB_USERNAME=root
+    DB_PASSWORD=
 
-## License
+    # NIBSS Config
+    NIBSS_BASE_URL=https://api.nibss-plc.com.ng
+    NIBSS_API_KEY=your_api_key
+    NIBSS_SECRET=your_api_secret
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+Run migrations:
+
+    php artisan migrate
+
+▶️ Running Locally
+
+    composer run dev
+
+
+API will be available at:
+
+    http://127.0.0.1:8000
+
+📖 API Documentation
+
+Swagger UI is included via L5-Swagger
+
+Generate docs:
+
+    php artisan l5-swagger:generate
+
+
+Access docs at:
+
+    http://127.0.0.1:8000/api/documentation
+
+🔐 Authentication
+
+This project supports Bearer Token authentication.
+
+In Swagger UI:
+
+    Click Authorize 🔒
+
+Enter your token in the format:
+
+    Bearer <your-token>
+
+
+    Example request with curl:
+
+    curl -X POST http://127.0.0.1:8000/api/bvn/verify \
+        -H "Authorization: Bearer your_token_here" \
+        -H "Content-Type: application/json" \
+        -d '{"bvn":"12345678901"}'
+
